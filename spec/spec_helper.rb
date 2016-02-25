@@ -1,0 +1,1 @@
+require_relative '../lib/active_relation_tracer'
