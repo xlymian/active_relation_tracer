@@ -1,4 +1,3 @@
-require 'active_relation_tracer'
+$:.unshift File.dirname(__FILE__) + "/../lib/active_relation_tracer"
 
-module ActiveRelationTracer
-end
+require 'active_relation_tracer'
