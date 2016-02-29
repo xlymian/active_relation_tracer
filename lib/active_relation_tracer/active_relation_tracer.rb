@@ -4,9 +4,13 @@ module ActiveRelationTracer
   extend ActiveSupport::Concern
 
   included do
-    [:where, :order, :limit].each do |method|
+    ActiveRelationTracer.trace_methods.each do |method|
       ActiveRelationTracer.wrap_method(self, method)
     end
+  end
+
+  def self.trace_methods
+    defined?(TRACE_METHODS) ? TRACE_METHODS : [ ]
   end
 
   def self.wrap_method(klass, name)

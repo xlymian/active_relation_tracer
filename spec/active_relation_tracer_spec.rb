@@ -4,6 +4,7 @@ require_relative '../lib/active_relation_tracer/active_relation_tracer'
 class User < ActiveRecord::Base
 end
 
+ActiveRelationTracer::TRACE_METHODS = [ :where, :order, :limit ]
 ActiveRecord::Relation.send(:include, ActiveRelationTracer)
 
 describe ActiveRelationTracer do
