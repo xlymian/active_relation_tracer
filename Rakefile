@@ -1,5 +1,6 @@
 require 'rspec/core/rake_task'
 require 'rubygems/package_task'
+require 'git-version-bump/rake-tasks'
 
 spec = eval(File.read('active_relation_tracer.gemspec'))
 
