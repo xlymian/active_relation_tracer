@@ -6,3 +6,6 @@ group :test do
   gem 'activerecord', '4.2.2'
   gem 'sqlite3'
 end
+
+# http://www.rubydoc.info/gems/git-version-bump/0.15.1
+gem 'git-version-bump', '~> 0.15.1'

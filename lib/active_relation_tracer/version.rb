@@ -1,3 +1,5 @@
+require 'git-version-bump'
+
 module ActiveRelationTracer
-  Version = VERSION = '0.0.1' unless defined? VERSION
+  VERSION = GVB.version
 end
