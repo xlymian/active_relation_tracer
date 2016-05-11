@@ -5,7 +5,7 @@ group :test do
   gem 'activesupport', '4.2.2'
   gem 'activerecord', '4.2.2'
   gem 'sqlite3'
+  gem 'rake'
 end
 
-# http://www.rubydoc.info/gems/git-version-bump/0.15.1
-gem 'git-version-bump', '~> 0.15.1'
+gemspec

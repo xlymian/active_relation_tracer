@@ -3,8 +3,8 @@ require 'active_relation_tracer/version'
 
 Gem::Specification.new do |s|
   s.name        = "active_relation_tracer"
-  s.version     = GVB.version
-  s.date        = GVB.date
+  s.version     = ActiveRelationTracer::Version
+  s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = "Code Challenge - method tracing in ActiveRelation."
   s.homepage    = "http://github.com/xlymian/active_relation_tracer"
   s.email       = "paul.mylchreest@mac.com"
@@ -19,4 +19,5 @@ Gem::Specification.new do |s|
   DESCRIPTION
 
   s.add_dependency("activesupport", "4.2.2")
+  s.add_development_dependency('highline', '~> 1.7.8')
 end

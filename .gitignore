@@ -6,3 +6,4 @@
 .env
 pkg
 .envrc
+Gemfile.lock
