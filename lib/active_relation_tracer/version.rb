@@ -1,3 +1,3 @@
 module ActiveRelationTracer
-  Version = VERSION = '0.0.1' unless defined? VERSION
+  Version = VERSION = '0.1.7' unless defined? VERSION
 end
