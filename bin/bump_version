@@ -1,0 +1,114 @@
+#!/usr/bin/env ruby
+
+require 'highline' # https://github.com/JEG2/highline
+require 'optparse'
+
+require_relative '../lib/active_relation_tracer/version'
+
+def current_version
+  ActiveRelationTracer::VERSION
+end
+
+def version_file
+  @_version_file ||= File.join Dir.pwd, 'lib/', 'active_relation_tracer', 'version.rb'
+end
+
+options = { bump: true, confirm: true }
+option_parser = OptionParser.new do |opts|
+  opts.on('-s','--show', 'Display current version') do
+    options[:show] = true
+    options[:bump] = false
+  end
+
+  opts.on("-i","--interactive", 'Interactive mode') do
+    options[:interactive] = true
+  end
+
+  opts.on("-c", "--[no-]confirm", "Confirm version bump") do |confirm|
+    options[:confirm] = confirm
+  end
+
+  opts.on('-v VERSION', '--version VERSION', 'Version to bump') do |version|
+    options[:version] = version
+  end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end
+
+def cli
+  @_cli ||= HighLine.new
+end
+
+def current_branch
+  %x[git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3].strip
+end
+
+def on_master?
+  current_branch == 'master'
+end
+
+def clean_branch?
+  %x[git status --porcelain --ignore-submodules].split.count == 0
+end
+
+unless on_master?
+  cli.say("<%= color('You are not on the master branch!', BOLD) %>")
+  exit 1
+end
+
+unless clean_branch?
+  cli.say("<%= color('There are uncommitted changes OR untracked files!', BOLD) %>")
+  exit 1
+end
+
+def bump_version(current_version, new_version)
+  cli.say "Updating #{version_file}"
+  cli.say %x[sed -i '' 's/#{current_version}/#{new_version}/' #{version_file}]
+  cli.say "Bumping version to v#{new_version}"
+  cli.say %x[git commit -a -m \"Bump version to v#{new_version}\"]
+  cli.say "Next, run `gem_push=no bundle exec rake release`"
+end
+
+def new_version
+  @_new_version ||= cli.ask('New version? ') { |v| v.default = current_version }
+end
+
+option_parser.parse!
+
+def check_version(new_version)
+  if new_version == current_version
+    cli.say 'Version is unchanged'
+    exit 1
+  end
+end
+
+def ask_and_bump_version(version)
+  if cli.agree("Bump version to #{version}? (y/n)", false)
+    bump_version(current_version, version)
+  else
+    cli.say 'Nothing done.'
+  end
+end
+
+if options[:bump] && options[:interactive]
+  check_version(new_version)
+  ask_and_bump_version(new_version)
+end
+
+if options[:show]
+  cli.say "Current version is #{current_version}"
+end
+
+if options[:bump] and !options[:interactive]
+  version = options[:version]
+  exit 1 unless version
+  check_version(version)
+  if options[:confirm]
+    ask_and_bump_version(version)
+  else
+    bump_version(current_version, version)
+  end
+end
