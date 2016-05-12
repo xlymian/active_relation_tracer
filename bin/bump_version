@@ -13,15 +13,15 @@ def version_file
   @_version_file ||= File.join Dir.pwd, 'lib/', 'active_relation_tracer', 'version.rb'
 end
 
-options = { bump: true, confirm: true }
+options = { bump: true, confirm: true, interactive: true }
 option_parser = OptionParser.new do |opts|
   opts.on('-s','--show', 'Display current version') do
     options[:show] = true
     options[:bump] = false
   end
 
-  opts.on("-i","--interactive", 'Interactive mode') do
-    options[:interactive] = true
+  opts.on("-i","--[no-]interactive", 'Interactive mode') do |interactive|
+    options[:interactive] = interactive
   end
 
   opts.on("-c", "--[no-]confirm", "Confirm version bump") do |confirm|
@@ -104,7 +104,10 @@ end
 
 if options[:bump] and !options[:interactive]
   version = options[:version]
-  exit 1 unless version
+  unless version
+    cli.say "You must specify a version!"
+    exit 1
+  end
   check_version(version)
   if options[:confirm]
     ask_and_bump_version(version)
